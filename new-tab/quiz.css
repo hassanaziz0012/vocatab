@@ -1,0 +1,302 @@
+/* ═══════════════════════════════════════════════════════════
+   VocaTab — New Tab Quiz Styles
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Surface & Background */
+  --bg-gradient-start: #0f0c29;
+  --bg-gradient-mid: #1a1a3e;
+  --bg-gradient-end: #24243e;
+
+  /* Card */
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  /* Text */
+  --text-primary: #f0f0f5;
+  --text-secondary: rgba(240, 240, 245, 0.55);
+  --text-accent: #a78bfa;
+
+  /* Accents */
+  --accent: #a78bfa;
+  --accent-glow: rgba(167, 139, 250, 0.25);
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.12);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.12);
+
+  /* Misc */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Skip Link ─── */
+.skip-link {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.skip-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Quiz Container ─── */
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  max-width: 620px;
+  padding: 0 24px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Streak Badge ─── */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(251, 191, 36, 0.10);
+  border: 1px solid rgba(251, 191, 36, 0.18);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fbbf24;
+  letter-spacing: 0.02em;
+}
+
+.streak-icon {
+  font-size: 1rem;
+}
+
+/* ─── Language Label ─── */
+.lang-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+/* ─── Card ─── */
+.card {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 48px 40px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.prompt-text {
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.divider {
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin: 28px auto;
+  opacity: 0.5;
+}
+
+.answer-text {
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--accent);
+  animation: fadeIn 0.35s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.answer-section {
+  /* shown via JS */
+}
+
+/* ─── Buttons ─── */
+.actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 13px 32px;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.01em;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  background: #9474f0;
+  box-shadow: 0 6px 28px var(--accent-glow);
+}
+
+.btn-success {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.btn-success:hover {
+  background: rgba(52, 211, 153, 0.2);
+}
+
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.btn-danger:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
+/* ─── Sentence Count ─── */
+.sentence-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* ─── Empty State ─── */
+.empty-state {
+  text-align: center;
+  max-width: 460px;
+  padding: 0 24px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+}
+
+.empty-state h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--accent), #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+}
+
+.empty-state .btn {
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* ─── Footer ─── */
+.footer {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.footer a:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 500px) {
+  .card {
+    padding: 32px 24px;
+  }
+
+  .prompt-text {
+    font-size: 1.25rem;
+  }
+
+  .answer-text {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VocaTab — Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ─── Header ─── -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="logo">📚 VocaTab</h1>
+        <p class="subtitle">Manage your sentence deck</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- ─── Settings Panel ─── -->
+      <section class="panel" id="settings-panel">
+        <h2 class="panel-title">⚙ Language Settings</h2>
+        <div class="settings-grid">
+          <div class="field">
+            <label for="native-lang">Your native language</label>
+            <input type="text" id="native-lang" placeholder="English" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="foreign-lang">Language you're learning</label>
+            <input type="text" id="foreign-lang" placeholder="Spanish" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="direction">Quiz direction</label>
+            <select id="direction">
+              <option value="random">Random (both ways)</option>
+              <option value="native-to-foreign">Native → Foreign only</option>
+              <option value="foreign-to-native">Foreign → Native only</option>
+            </select>
+          </div>
+          <div class="field field-action">
+            <button id="save-settings" class="btn btn-primary">Save Settings</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Add Sentence ─── -->
+      <section class="panel" id="add-panel">
+        <h2 class="panel-title">✏️ Add a Sentence</h2>
+        <form id="add-form" class="add-form">
+          <div class="field">
+            <label for="native-text">Native text</label>
+            <textarea id="native-text" rows="2" placeholder="The weather is nice today"></textarea>
+          </div>
+          <div class="field">
+            <label for="foreign-text">Foreign text</label>
+            <textarea id="foreign-text" rows="2" placeholder="El tiempo es agradable hoy"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Sentence</button>
+        </form>
+        <div id="add-feedback" class="feedback" style="display:none;"></div>
+      </section>
+
+      <!-- ─── Import ─── -->
+      <section class="panel" id="import-panel">
+        <h2 class="panel-title">📥 Bulk Import</h2>
+        <p class="panel-desc">Upload a <strong>CSV</strong> or <strong>JSON</strong> file with your sentence pairs.</p>
+
+        <div class="format-specs">
+          <div class="format-spec">
+            <h3>CSV Format</h3>
+            <pre><code>native_text,foreign_text
+"The weather is nice today","El tiempo es agradable hoy"
+"Good morning","Buenos días"</code></pre>
+          </div>
+          <div class="format-spec">
+            <h3>JSON Format</h3>
+            <pre><code>[
+  { "native": "The weather is nice today", "foreign": "El tiempo es agradable hoy" },
+  { "native": "Good morning", "foreign": "Buenos días" }
+]</code></pre>
+          </div>
+        </div>
+
+        <div class="import-zone" id="import-zone">
+          <input type="file" id="file-input" accept=".csv,.json" hidden>
+          <button id="import-btn" class="btn btn-secondary">Choose File</button>
+          <p class="import-hint">or drag & drop a .csv or .json file here</p>
+        </div>
+
+        <div id="import-progress" class="progress-bar" style="display:none;">
+          <div id="import-progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="import-feedback" class="feedback" style="display:none;"></div>
+      </section>
+
+      <!-- ─── Sentence List ─── -->
+      <section class="panel" id="list-panel">
+        <div class="panel-header-row">
+          <h2 class="panel-title">📋 Your Sentences</h2>
+          <span id="total-count" class="badge">0</span>
+        </div>
+        <div id="sentence-list" class="sentence-list">
+          <p class="empty-list-msg" id="empty-list-msg">No sentences yet. Add some above!</p>
+        </div>
+        <div id="pagination" class="pagination" style="display:none;">
+          <button id="prev-page" class="btn btn-ghost" disabled>← Prev</button>
+          <span id="page-info" class="page-info"></span>
+          <button id="next-page" class="btn btn-ghost">Next →</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" style="display:none;"></div>
+  </div>
+
+  <script src="../shared/db.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

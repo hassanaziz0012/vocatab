@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VocaTab — New Tab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <!-- ─── Skip Link ─── -->
+  <a href="#" id="skip-link" class="skip-link" title="Open a blank new tab">Skip →</a>
+
+  <!-- ─── Main Quiz Container ─── -->
+  <main id="quiz-container" class="quiz-container">
+    <!-- Streak badge -->
+    <div id="streak-badge" class="streak-badge" style="display:none;">
+      <span class="streak-icon">🔥</span>
+      <span id="streak-count">0</span> day streak
+    </div>
+
+    <!-- Language label -->
+    <p id="lang-label" class="lang-label"></p>
+
+    <!-- Prompt card -->
+    <div id="card" class="card">
+      <p id="prompt-text" class="prompt-text"></p>
+      <div id="answer-section" class="answer-section" style="display:none;">
+        <div class="divider"></div>
+        <p id="answer-text" class="answer-text"></p>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div id="actions-reveal" class="actions">
+      <button id="btn-reveal" class="btn btn-primary">Show Answer</button>
+    </div>
+
+    <div id="actions-grade" class="actions" style="display:none;">
+      <button id="btn-correct" class="btn btn-success">Got it ✓</button>
+      <button id="btn-missed" class="btn btn-danger">Missed it ✗</button>
+    </div>
+
+    <!-- Sentence count -->
+    <p id="sentence-count" class="sentence-count"></p>
+  </main>
+
+  <!-- ─── Empty State ─── -->
+  <div id="empty-state" class="empty-state" style="display:none;">
+    <div class="empty-icon">📚</div>
+    <h1>Welcome to VocaTab</h1>
+    <p>You don't have any sentences yet.<br>Add some to start learning every time you open a new tab.</p>
+    <a id="open-options" class="btn btn-primary" href="#">Open Options & Add Sentences</a>
+  </div>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <a id="footer-options" href="#">⚙ Options</a>
+  </footer>
+
+  <script src="../shared/db.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
