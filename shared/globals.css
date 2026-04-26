@@ -1,0 +1,146 @@
+/* ═══════════════════════════════════════════════════════════
+   VocaTab — Global Design Tokens
+   ═══════════════════════════════════════════════════════════
+   Brand:   HSL(173, 20%, 52%)
+   Light:   HSL(60, 2%, 92%)  base
+   Dark:    HSL(60, 2%, 16%)  base
+
+   Shade generation: hue & saturation stay fixed; only
+   lightness is adjusted.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Base palette (always available) ─── */
+:root {
+  /* Brand */
+  --brand-50:  hsl(173, 20%, 95%);
+  --brand-100: hsl(173, 20%, 88%);
+  --brand-200: hsl(173, 20%, 76%);
+  --brand-300: hsl(173, 20%, 64%);
+  --brand-400: hsl(173, 20%, 52%);   /* ← base brand */
+  --brand-500: hsl(173, 20%, 44%);
+  --brand-600: hsl(173, 20%, 36%);
+  --brand-700: hsl(173, 20%, 28%);
+  --brand-800: hsl(173, 20%, 20%);
+  --brand-900: hsl(173, 20%, 12%);
+
+  /* Neutral – light scale (based on HSL 60,2%,92%) */
+  --neutral-50:  hsl(60, 2%, 98%);
+  --neutral-100: hsl(60, 2%, 95%);
+  --neutral-200: hsl(60, 2%, 92%);   /* ← base light */
+  --neutral-300: hsl(60, 2%, 84%);
+  --neutral-400: hsl(60, 2%, 72%);
+  --neutral-500: hsl(60, 2%, 56%);
+  --neutral-600: hsl(60, 2%, 40%);
+
+  /* Neutral – dark scale (based on HSL 60,2%,16%) */
+  --neutral-700: hsl(60, 2%, 30%);
+  --neutral-800: hsl(60, 2%, 22%);
+  --neutral-900: hsl(60, 2%, 16%);   /* ← base dark */
+  --neutral-950: hsl(60, 2%, 10%);
+  --neutral-1000: hsl(60, 2%, 6%);
+
+  /* Semantic */
+  --success: hsl(152, 56%, 48%);
+  --danger:  hsl(0, 72%, 56%);
+  --warning: hsl(40, 92%, 56%);
+
+  /* Shared geometry */
+  --radius:    12px;
+  --radius-sm: 8px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Light theme  (default)
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:            var(--neutral-100);
+  --bg-surface:    var(--neutral-50);
+  --bg-elevated:   #fff;
+  --border:        var(--neutral-300);
+  --border-focus:  var(--brand-400);
+
+  --text:          var(--neutral-900);
+  --text-dim:      var(--neutral-600);
+  --text-muted:    var(--neutral-500);
+
+  --accent:        var(--brand-400);
+  --accent-hover:  var(--brand-500);
+  --accent-subtle: var(--brand-50);
+  --accent-glow:   hsla(173, 20%, 52%, 0.15);
+
+  --success-bg:    hsla(152, 56%, 48%, 0.10);
+  --danger-bg:     hsla(0, 72%, 56%, 0.08);
+  --warning-bg:    hsla(40, 92%, 56%, 0.10);
+
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.10);
+
+  --card-bg:       var(--bg-surface);
+  --card-border:   var(--border);
+  --card-shadow:   var(--shadow-md);
+
+  --scrollbar-thumb: var(--neutral-300);
+
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Dark theme  (OS preference)
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:            var(--neutral-950);
+    --bg-surface:    var(--neutral-900);
+    --bg-elevated:   var(--neutral-800);
+    --border:        hsl(60, 2%, 22%);
+    --border-focus:  var(--brand-400);
+
+    --text:          var(--neutral-200);
+    --text-dim:      var(--neutral-500);
+    --text-muted:    var(--neutral-600);
+
+    --accent:        var(--brand-300);
+    --accent-hover:  var(--brand-400);
+    --accent-subtle: hsla(173, 20%, 52%, 0.10);
+    --accent-glow:   hsla(173, 20%, 52%, 0.18);
+
+    --success-bg:    hsla(152, 56%, 48%, 0.12);
+    --danger-bg:     hsla(0, 72%, 56%, 0.10);
+    --warning-bg:    hsla(40, 92%, 56%, 0.10);
+
+    --shadow-sm:     0 1px 3px rgba(0,0,0,0.25);
+    --shadow-md:     0 4px 16px rgba(0,0,0,0.35);
+    --shadow-lg:     0 8px 32px rgba(0,0,0,0.45);
+
+    --card-bg:       var(--bg-surface);
+    --card-border:   var(--border);
+    --card-shadow:   var(--shadow-md);
+
+    --scrollbar-thumb: var(--neutral-700);
+
+    color-scheme: dark;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Shared resets & base typography
+   ═══════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
