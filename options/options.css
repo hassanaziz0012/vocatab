@@ -48,10 +48,76 @@ body {
 .panel:nth-child(2) { animation-delay: 0.05s; }
 .panel:nth-child(3) { animation-delay: 0.10s; }
 .panel:nth-child(4) { animation-delay: 0.15s; }
+.panel:nth-child(5) { animation-delay: 0.20s; }
+.panel:nth-child(6) { animation-delay: 0.25s; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Anki Import ─── */
+.anki-info-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.anki-info-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.anki-info-text strong {
+  color: var(--text);
+}
+
+.anki-field-order {
+  margin-bottom: 18px;
+}
+
+.field-mapping {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field-tag {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.field-tag strong {
+  color: var(--accent);
+}
+
+.swap-btn {
+  font-size: 1.1rem !important;
+  padding: 6px 14px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: transform var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.swap-btn:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  transform: scale(1.08);
 }
 
 .panel-title {

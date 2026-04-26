@@ -96,6 +96,39 @@
         <div id="import-feedback" class="feedback" style="display:none;"></div>
       </section>
 
+      <!-- ─── Anki Deck Import ─── -->
+      <section class="panel" id="anki-panel">
+        <h2 class="panel-title">🃏 Anki Deck Import</h2>
+        <p class="panel-desc">Upload an Anki deck (<strong>.apkg</strong>) file to import all its cards into your collection.</p>
+
+        <div class="anki-info-notice" id="anki-info-notice">
+          <span class="anki-info-icon">ℹ️</span>
+          <div class="anki-info-text">
+            By default, <strong>Field 1 (Front)</strong> is imported as the <em>foreign</em> text and
+            <strong>Field 2 (Back)</strong> as the <em>native</em> text. Use the swap button below if your deck is structured differently.
+          </div>
+        </div>
+
+        <div class="anki-field-order" id="anki-field-order">
+          <div class="field-mapping">
+            <span class="field-tag" id="field-1-label">Field 1 (Front) → <strong>Foreign</strong></span>
+            <button type="button" class="btn btn-ghost swap-btn" id="anki-swap-btn" title="Swap field mapping">⇄ Swap</button>
+            <span class="field-tag" id="field-2-label">Field 2 (Back) → <strong>Native</strong></span>
+          </div>
+        </div>
+
+        <div class="import-zone" id="anki-import-zone">
+          <input type="file" id="anki-file-input" accept=".apkg" hidden>
+          <button id="anki-import-btn" class="btn btn-secondary">Choose .apkg File</button>
+          <p class="import-hint">or drag & drop an Anki deck here</p>
+        </div>
+
+        <div id="anki-progress" class="progress-bar" style="display:none;">
+          <div id="anki-progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="anki-feedback" class="feedback" style="display:none;"></div>
+      </section>
+
       <!-- ─── Sentence List ─── -->
       <section class="panel" id="list-panel">
         <div class="panel-header-row">
@@ -117,6 +150,9 @@
     <div id="toast" class="toast" style="display:none;"></div>
   </div>
 
+  <script src="../lib/jszip.min.js"></script>
+  <script src="../lib/fzstd.min.js"></script>
+  <script src="../lib/sql-wasm.js"></script>
   <script src="../shared/db.js"></script>
   <script src="options.js"></script>
 </body>

@@ -24,6 +24,16 @@
   const importProgressFill = document.getElementById('import-progress-fill');
   const importFeedback = document.getElementById('import-feedback');
 
+  const ankiImportBtn = document.getElementById('anki-import-btn');
+  const ankiFileInput = document.getElementById('anki-file-input');
+  const ankiImportZone = document.getElementById('anki-import-zone');
+  const ankiProgress = document.getElementById('anki-progress');
+  const ankiProgressFill = document.getElementById('anki-progress-fill');
+  const ankiFeedback = document.getElementById('anki-feedback');
+  const ankiSwapBtn = document.getElementById('anki-swap-btn');
+  const field1Label = document.getElementById('field-1-label');
+  const field2Label = document.getElementById('field-2-label');
+
   const sentenceList = document.getElementById('sentence-list');
   const emptyListMsg = document.getElementById('empty-list-msg');
   const totalCount = document.getElementById('total-count');
@@ -182,6 +192,184 @@
     }
     result.push(current);
     return result;
+  }
+
+  // ─── Anki deck import ───
+  let ankiFieldsSwapped = false;
+
+  ankiSwapBtn.addEventListener('click', () => {
+    ankiFieldsSwapped = !ankiFieldsSwapped;
+    if (ankiFieldsSwapped) {
+      field1Label.innerHTML = 'Field 1 (Front) → <strong>Native</strong>';
+      field2Label.innerHTML = 'Field 2 (Back) → <strong>Foreign</strong>';
+    } else {
+      field1Label.innerHTML = 'Field 1 (Front) → <strong>Foreign</strong>';
+      field2Label.innerHTML = 'Field 2 (Back) → <strong>Native</strong>';
+    }
+  });
+
+  ankiImportBtn.addEventListener('click', () => ankiFileInput.click());
+  ankiFileInput.addEventListener('change', () => {
+    if (ankiFileInput.files.length) handleAnkiFile(ankiFileInput.files[0]);
+  });
+
+  // Drag & drop for Anki zone
+  ankiImportZone.addEventListener('dragover', (e) => { e.preventDefault(); ankiImportZone.classList.add('drag-over'); });
+  ankiImportZone.addEventListener('dragleave', () => ankiImportZone.classList.remove('drag-over'));
+  ankiImportZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    ankiImportZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) handleAnkiFile(e.dataTransfer.files[0]);
+  });
+
+  async function handleAnkiFile(file) {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext !== 'apkg') {
+      showFeedback(ankiFeedback, 'Only <strong>.apkg</strong> files are supported.', 'error');
+      return;
+    }
+
+    ankiProgress.style.display = 'block';
+    ankiProgressFill.style.width = '10%';
+
+    try {
+      // 1. Read file as ArrayBuffer
+      const buffer = await file.arrayBuffer();
+      ankiProgressFill.style.width = '20%';
+
+      // 2. Unzip with JSZip
+      const zip = await JSZip.loadAsync(buffer);
+      ankiProgressFill.style.width = '35%';
+
+      // 3. Find the SQLite database file
+      //    Modern Anki (2.1.50+) uses collection.anki21b (Zstd-compressed SQLite)
+      //    Older versions use collection.anki21 or collection.anki2 (plain SQLite)
+      let dbBytes;
+      const anki21b = zip.file('collection.anki21b');
+      const anki21 = zip.file('collection.anki21');
+      const anki2 = zip.file('collection.anki2');
+
+      if (anki21b) {
+        // Modern format: Zstd-compressed SQLite — decompress with fzstd
+        console.log('[VocaTab] Found collection.anki21b (modern Zstd-compressed format)');
+        const compressed = new Uint8Array(await anki21b.async('arraybuffer'));
+        dbBytes = fzstd.decompress(compressed);
+      } else if (anki21) {
+        console.log('[VocaTab] Found collection.anki21 (legacy format)');
+        dbBytes = new Uint8Array(await anki21.async('arraybuffer'));
+      } else if (anki2) {
+        console.log('[VocaTab] Found collection.anki2 (legacy format)');
+        dbBytes = new Uint8Array(await anki2.async('arraybuffer'));
+      } else {
+        showFeedback(ankiFeedback, 'Could not find a valid Anki collection database inside this file.', 'error');
+        ankiProgress.style.display = 'none';
+        return;
+      }
+
+      ankiProgressFill.style.width = '50%';
+
+      // 4. Open the SQLite database with sql.js
+      const SQL = await initSqlJs({
+        locateFile: (filename) => {
+          if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+            return chrome.runtime.getURL(`lib/${filename}`);
+          }
+          return `../lib/${filename}`;
+        },
+      });
+      const db = new SQL.Database(dbBytes);
+      ankiProgressFill.style.width = '65%';
+
+      // 5. Query all notes
+      let results;
+      try {
+        results = db.exec('SELECT flds FROM notes');
+      } catch (queryErr) {
+        showFeedback(ankiFeedback, `Failed to read notes from the Anki database: ${queryErr.message}`, 'error');
+        db.close();
+        ankiProgress.style.display = 'none';
+        return;
+      }
+
+      if (!results.length || !results[0].values.length) {
+        showFeedback(ankiFeedback, 'No notes found in this Anki deck.', 'error');
+        db.close();
+        ankiProgress.style.display = 'none';
+        return;
+      }
+
+      ankiProgressFill.style.width = '75%';
+
+      // 6. Parse fields and build sentence pairs
+      const SEPARATOR = '\x1f';
+      const sentences = [];
+      const errors = [];
+
+      // Debug: log first 5 raw field values to help diagnose structure
+      console.log('[VocaTab Anki Import] First 5 raw notes:');
+      results[0].values.slice(0, 5).forEach((row, i) => {
+        const flds = row[0];
+        const fields = flds.split(SEPARATOR);
+        console.log(`  Note ${i + 1} (${fields.length} fields):`, fields);
+      });
+
+      results[0].values.forEach((row, i) => {
+        const flds = row[0];
+        const fields = flds.split(SEPARATOR);
+
+        if (fields.length < 2) {
+          errors.push(`Note ${i + 1}: fewer than 2 fields`);
+          return;
+        }
+
+        // Strip HTML tags from field content
+        const field1 = stripHtml(fields[0]).trim();
+        const field2 = stripHtml(fields[1]).trim();
+
+        if (!field1 || !field2) {
+          errors.push(`Note ${i + 1}: empty field after stripping HTML`);
+          return;
+        }
+
+        if (ankiFieldsSwapped) {
+          sentences.push({ native: field1, foreign: field2 });
+        } else {
+          sentences.push({ native: field2, foreign: field1 });
+        }
+      });
+
+      db.close();
+      ankiProgressFill.style.width = '85%';
+
+      if (sentences.length === 0) {
+        showFeedback(ankiFeedback, errors.length ? errors.join('<br>') : 'No valid sentence pairs found in this deck.', 'error');
+        ankiProgress.style.display = 'none';
+        return;
+      }
+
+      // 7. Bulk insert
+      const s = await DB.getSettings();
+      const count = await DB.addSentencesBulk(sentences, s.nativeLang, s.foreignLang);
+
+      ankiProgressFill.style.width = '100%';
+      setTimeout(() => { ankiProgress.style.display = 'none'; ankiProgressFill.style.width = '0%'; }, 600);
+
+      let msg = `Imported ${count} card${count === 1 ? '' : 's'} from Anki deck successfully!`;
+      if (errors.length) msg += `<br><br>⚠ ${errors.length} note(s) skipped:<br>` + errors.slice(0, 5).join('<br>');
+      showFeedback(ankiFeedback, msg, errors.length ? 'warning' : 'success');
+      ankiFileInput.value = '';
+      await renderList();
+
+    } catch (err) {
+      showFeedback(ankiFeedback, `Error processing Anki deck: ${err.message}`, 'error');
+      ankiProgress.style.display = 'none';
+    }
+  }
+
+  function stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
   }
 
   // ─── Render sentence list ───
